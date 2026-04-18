@@ -2,14 +2,24 @@ import { getServerSession } from "next-auth"
 import { authOptions } from "@/lib/auth"
 import { redirect } from "next/navigation"
 import Image from "next/image"
-import { signOut } from "next-auth/react"
+import { prisma } from "@/lib/prisma"
+import NewProjectButton from "@/components/NewProjectButton"
 
 export default async function Dashboard() {
   const session = await getServerSession(authOptions)
 
-  if (!session) {
+  if (!session?.user?.id) {
     redirect("/login")
   }
+
+  const projects = await prisma.project.findMany({
+    where: {
+      userId: session.user.id,
+    },
+    orderBy: {
+      createdAt: "desc",
+    },
+  })
 
   return (
     <div className="min-h-screen bg-black text-white">
@@ -57,9 +67,7 @@ export default async function Dashboard() {
 
         {/* ACTION */}
         <div className="mb-10">
-          <button className="px-6 py-3 bg-white text-black rounded-lg font-medium hover:opacity-90">
-            + Novo Projeto
-          </button>
+          <NewProjectButton />
         </div>
 
         {/* PROJECTS */}
@@ -68,9 +76,28 @@ export default async function Dashboard() {
             Seus projetos
           </h3>
 
-          <div className="border border-white/10 rounded-lg p-10 text-center opacity-60">
-            Nenhum projeto ainda.
-          </div>
+          {projects.length === 0 ? (
+            <div className="border border-white/10 rounded-lg p-10 text-center opacity-60">
+              Nenhum projeto ainda.
+            </div>
+          ) : (
+            <div className="grid grid-cols-3 gap-6">
+              {projects.map((project) => (
+                <a
+                  key={project.id}
+                  href={`/editor/${project.id}`}
+                  className="p-6 border border-white/10 rounded-lg hover:border-white/30 transition"
+                >
+                  <h4 className="font-semibold">
+                    {project.name}
+                  </h4>
+                  <p className="text-sm opacity-60 mt-2">
+                    {new Date(project.createdAt).toLocaleDateString()}
+                  </p>
+                </a>
+              ))}
+            </div>
+          )}
         </div>
       </main>
     </div>
