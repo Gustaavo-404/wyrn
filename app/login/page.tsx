@@ -7,11 +7,11 @@ export default function LoginPage() {
     <div>
       <h1>Login</h1>
 
-      <button onClick={() => signIn("google")}>
+      <button onClick={() => signIn("google", { callbackUrl: "/dashboard" })}>
         Entrar com Google
       </button>
 
-      <button onClick={() => signIn("github")}>
+      <button onClick={() => signIn("github", { callbackUrl: "/dashboard" })}>
         Entrar com GitHub
       </button>
     </div>
