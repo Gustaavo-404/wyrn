@@ -1,73 +1,79 @@
 "use client"
 
 import { useEditorStore } from "@/store/useEditorStore"
-import { SectionType } from "@/types/section"
-import { renderSection } from "@/lib/renderer"
-import { renderSectionPreview } from "@/lib/sectionPreviewRenderer"
-
-const sectionCatalog: {
-    type: SectionType
-    label: string
-}[] = [
-        { type: "hero", label: "Hero" },
-        { type: "pricing", label: "Pricing" },
-        { type: "steps", label: "Steps" },
-        { type: "features", label: "Features" },
-        { type: "testimonials", label: "Testimonials" },
-        { type: "faq", label: "FAQ" },
-        { type: "cta", label: "CTA" },
-    ]
-
-const defaultSections: Partial<Record<SectionType, any>> = {
-    hero: { title: "Título", subtitle: "Sub" },
-    pricing: { title: "Planos", plans: [] },
-    steps: { title: "Como funciona", steps: [] },
-}
+import { sectionLibrary } from "@/lib/sections/library"
+import { SectionTemplate } from "@/types/template"
 
 export default function Sidebar() {
     const addSection = useEditorStore((s: any) => s.addSection)
 
-    function handleAdd(type: SectionType) {
+    function handleAdd(template: SectionTemplate) {
         addSection({
             id: crypto.randomUUID(),
-            type,
-            variant: "default",
-            theme: "minimal-dark",
-            content: defaultSections[type] ?? {},
+            type: template.type,
+            theme: template.theme,
+            variant: template.variant,
+
+            component: template.component,
+
+            content: template.defaultContent,
         })
     }
 
     return (
-        <div className="w-72 border-r border-white/10 p-4 overflow-y-auto">
-            <h2 className="mb-4 font-semibold">Blocos</h2>
+        <div className="w-80 border-r border-white/10 p-4 overflow-y-auto">
 
-            <div className="space-y-4">
-                {sectionCatalog.map((section) => (
-                    <div
-                        key={section.type}
-                        onClick={() => handleAdd(section.type)}
-                        className="w-full text-left border border-white/10 rounded-lg overflow-hidden hover:border-white/30 transition cursor-pointer"
-                    >
-                        {/* PREVIEW */}
-                        <div className="h-44 overflow-hidden border border-white/10 rounded bg-white text-black">
-                            <div className="scale-[0.25] origin-top-left w-[400%] pointer-events-none">
-                                {renderSection({
-                                    id: "preview",
-                                    type: section.type,
-                                    variant: "default",
-                                    theme: "minimal-light",
-                                    content: defaultSections[section.type],
-                                })}
+            <h2 className="mb-4 font-semibold">
+                Section Marketplace
+            </h2>
+
+            {Object.entries(sectionLibrary).map(([theme, sections]) => (
+                <div key={theme} className="mb-6">
+
+                    <h3 className="text-xs uppercase text-white/40 mb-3">
+                        {theme}
+                    </h3>
+
+                    <div className="space-y-3">
+
+                        {sections.map((template) => (
+                            <div
+                                key={template.id}
+                                onClick={() => handleAdd(template)}
+                                className="
+                                    cursor-pointer
+                                    border border-white/10 rounded-lg
+                                    overflow-hidden hover:border-white/30
+                                    transition bg-white/5
+                                "
+                            >
+
+                                {/* PREVIEW (REAL SECTION) */}
+                                <div className="h-44 overflow-hidden bg-white text-black">
+                                    <div className="scale-[0.25] origin-top-left w-[400%] pointer-events-none">
+                                        {(() => {
+                                            const Preview = template.component
+                                            return <Preview {...template.defaultContent} />
+                                        })()}
+                                    </div>
+                                </div>
+
+                                {/* INFO */}
+                                <div className="p-2">
+                                    <div className="text-sm font-medium">
+                                        {template.name}
+                                    </div>
+                                    <div className="text-xs text-white/40">
+                                        {template.type}
+                                    </div>
+                                </div>
+
                             </div>
-                        </div>
+                        ))}
 
-                        {/* LABEL */}
-                        <div className="p-2 text-sm text-white">
-                            + {section.label}
-                        </div>
                     </div>
-                ))}
-            </div>
+                </div>
+            ))}
         </div>
     )
 }

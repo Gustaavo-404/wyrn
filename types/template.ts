@@ -1,20 +1,13 @@
 import { Section } from "./section"
+import { ComponentType } from "react"
 
-export type TemplateCategory =
-  | "saas"
-  | "portfolio"
-  | "agency"
-  | "ecommerce"
-  | "landing"
-  | "product-launch"
-
-export type Template = {
+export type SectionTemplate = {
   id: string
   name: string
-  category: TemplateCategory
+  type: Section["type"]
+  theme: Section["theme"]
+  variant: Section["variant"]
 
-  description?: string
-  thumbnail?: string
-
-  sections: Section[]
+  component: ComponentType<any>
+  defaultContent: any
 }
