@@ -12,6 +12,7 @@ export type SectionType =
   | "features"
   | "testimonials"
   | "cta"
+  | "faq"
 
 export type SectionVariant =
   | "default"
@@ -22,10 +23,8 @@ export type SectionVariant =
 export type Section = {
   id: string
   type: SectionType
-  theme: string
-  variant: string
-
-  component: ComponentType<any>
-
+  theme: Theme
+  variant: SectionVariant
   content: any
+  component?: ComponentType<any>
 }
