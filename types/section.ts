@@ -1,10 +1,78 @@
-export type SectionType = "hero"
+export type Theme =
+  | "minimal-dark"
+  | "minimal-light"
+  | "startup"
+  | "saas-modern"
+  | "creative"
+  | "brutalist"
+  | "corporate"
+  | "luxury"
+  | "tech-futuristic"
+  | "gaming"
+  | "portfolio-art"
+  | "ecommerce"
+  | "agency"
+  | "personal-brand"
+  | "developer"
+  | "ai-focused"
+  | "crypto-web3"
+  | "product-launch"
 
-export type SectionVariant = "default"
+export type SectionType =
+  | "hero"
+  | "features"
+  | "feature-grid"
+  | "feature-cards"
+  | "pricing"
+  | "testimonials"
+  | "cta"
+  | "footer"
+  | "navbar"
+  | "logos"
+  | "steps"
+  | "stats"
+  | "faq"
+  | "timeline"
+  | "video-hero"
+  | "image-showcase"
+  | "text-block"
+  | "split-section"
+  | "cta-banner"
+  | "newsletter"
+  | "contact"
+  | "portfolio-grid"
+  | "blog-preview"
+  | "team"
+  | "social-proof"
+  | "process"
+  | "numbers-counter"
+  | "comparison-table"
+  | "animations-text"
+  | "hero-split"
+  | "hero-video"
+  | "hero-gradient"
+  | "hero-minimal"
 
-export type Section = {
+export type SectionVariant =
+  | "default"
+  | "centered"
+  | "split"
+  | "dark"
+  | "light"
+  | "gradient"
+  | "glass"
+  | "minimal"
+  | "bold"
+  | "animated"
+  | "grid"
+  | "stacked"
+  | "modern"
+  | "classic"
+
+export type Section<T = any> = {
   id: string
   type: SectionType
   variant: SectionVariant
-  content: any
+  theme?: Theme
+  content: T
 }

@@ -1,0 +1,5 @@
+export * from "./section"
+export * from "./sections/hero"
+export * from "./sections/pricing"
+export * from "./sections/testimonials"
+export * from "./sections/steps"
