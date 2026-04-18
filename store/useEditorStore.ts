@@ -1,11 +1,29 @@
 import { create } from "zustand"
+import { Section } from "@/types/section"
 
-export const useEditorStore = create((set) => ({
+type EditorStore = {
+  sections: Section[]
+  setSections: (sections: Section[]) => void
+  addSection: (section: Section) => void
+  reorderSections: (from: number, to: number) => void
+}
+
+export const useEditorStore = create<EditorStore>((set) => ({
   sections: [],
-  setSections: (sections: any) => set({ sections }),
 
-  addSection: (section: any) =>
-    set((state: any) => ({
+  setSections: (sections) => set({ sections }),
+
+  addSection: (section) =>
+    set((state) => ({
       sections: [...state.sections, section],
     })),
+
+  reorderSections: (from, to) =>
+    set((state) => {
+      const updated = [...state.sections]
+      const [moved] = updated.splice(from, 1)
+      updated.splice(to, 0, moved)
+
+      return { sections: updated }
+    }),
 }))

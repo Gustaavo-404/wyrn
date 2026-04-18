@@ -5,7 +5,7 @@ import Pricing from "@/components/sections/pricing/Pricing"
 import Steps from "@/components/sections/steps/Steps"
 
 /**
- * SECTION REGISTRY
+ * 1. Registry de componentes
  */
 const components: Partial<Record<Section["type"], any>> = {
   hero: Hero,
@@ -14,18 +14,22 @@ const components: Partial<Record<Section["type"], any>> = {
 }
 
 /**
- * VARIANT WRAPPERS
+ * 2. Variant wrappers
  */
 const variantWrappers: Partial<
   Record<SectionVariant, (c: any) => any>
 > = {
   default: (c) => c,
-  centered: (c) => <div className="text-center">{c}</div>,
-  dark: (c) => <div className="bg-black text-white">{c}</div>,
+  centered: (c) => (
+    <div className="text-center">{c}</div>
+  ),
+  dark: (c) => (
+    <div className="bg-black text-white">{c}</div>
+  ),
 }
 
 /**
- * THEME WRAPPERS
+ * 3. Theme wrappers
  */
 const themeWrappers: Partial<
   Record<Theme, (c: any) => any>
@@ -43,30 +47,33 @@ const themeWrappers: Partial<
 }
 
 /**
- * MAIN RENDERER
+ * 4. CORE RENDER FUNCTION
+ */
+export function renderSection(section: Section) {
+  const Component = components[section.type]
+
+  if (!Component) return null
+
+  const VariantWrapper =
+    variantWrappers[section.variant] ?? ((c: any) => c)
+
+  const ThemeWrapper =
+    section.theme
+      ? themeWrappers[section.theme] ?? ((c: any) => c)
+      : (c: any) => c
+
+  const content = <Component {...section.content} />
+
+  return (
+    <div key={section.id}>
+      {ThemeWrapper(VariantWrapper(content))}
+    </div>
+  )
+}
+
+/**
+ * 5. FULL PAGE RENDER
  */
 export function renderSections(sections: Section[]) {
-  return sections.map((section) => {
-    const Component = components[section.type]
-
-    if (!Component) return null
-
-    const VariantWrapper =
-      variantWrappers[section.variant] ?? ((c: any) => c)
-
-    const ThemeWrapper =
-      section.theme
-        ? themeWrappers[section.theme] ?? ((c: any) => c)
-        : (c: any) => c
-
-    const content = (
-      <Component {...section.content} />
-    )
-
-    return (
-      <div key={section.id}>
-        {ThemeWrapper(VariantWrapper(content))}
-      </div>
-    )
-  })
+  return sections.map(renderSection)
 }

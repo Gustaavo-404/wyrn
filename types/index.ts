@@ -1,4 +1,5 @@
 export * from "./section"
+export * from "./template"
 export * from "./sections/hero"
 export * from "./sections/pricing"
 export * from "./sections/testimonials"
