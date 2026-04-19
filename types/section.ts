@@ -20,11 +20,18 @@ export type SectionVariant =
   | "split"
   | "dark"
 
-export type Section = {
+// ─── O que fica no banco ───────────────────────────────────────────────────────
+export type SectionInstance = {
   id: string
+  templateId: string
   type: SectionType
   theme: Theme
-  variant: SectionVariant
-  content: any
-  component?: ComponentType<any>
+  variant?: SectionVariant
+  content: Record<string, any>
+  style?: Record<string, any>
+}
+
+// ─── Forma hidratada: instance + componente ──
+export type HydratedSection = SectionInstance & {
+  component: ComponentType<any>
 }

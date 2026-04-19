@@ -1,9 +1,9 @@
-import { Section } from "@/types/section"
+import { HydratedSection } from "@/types/section"
 
 /**
  * CORE RENDER FUNCTION
  */
-export function renderSection(section: Section) {
+export function renderSection(section: HydratedSection) {
   const Component = section.component
 
   if (!Component) return null
@@ -18,6 +18,6 @@ export function renderSection(section: Section) {
 /**
  * FULL PAGE RENDER
  */
-export function renderSections(sections: Section[]) {
+export function renderSections(sections: HydratedSection[]) {
   return sections.map(renderSection)
 }

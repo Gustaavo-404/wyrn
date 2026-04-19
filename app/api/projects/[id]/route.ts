@@ -86,3 +86,37 @@ export async function DELETE(
 
   return new Response(null, { status: 204 })
 }
+
+export async function PATCH(
+  req: Request,
+  { params }: { params: { id: string } }
+) {
+  const session = await getServerSession(authOptions)
+
+  if (!session?.user?.id) {
+    return new Response("Unauthorized", { status: 401 })
+  }
+
+  const body = await req.json()
+
+  // PATCH só atualiza `data` (sections), nunca metadados
+  if (!body.data || typeof body.data !== "object") {
+    return new Response("Invalid payload", { status: 400 })
+  }
+
+  const updated = await prisma.project.updateMany({
+    where: {
+      id: params.id,
+      userId: session.user.id,
+    },
+    data: {
+      data: body.data,
+    },
+  })
+
+  if (updated.count === 0) {
+    return new Response("Not found", { status: 404 })
+  }
+
+  return new Response(null, { status: 204 })
+}
