@@ -76,6 +76,7 @@ export default function Sidebar() {
     const [openGroups, setOpenGroups] = useState<Record<string, boolean>>({})
     const [collapsed, setCollapsed] = useState(false)
     const { toast, showToast } = useToast()
+    const fullscreen = useEditorStore((s: any) => s.fullscreen)
 
     const indexed = useMemo(() => buildSectionIndex(sectionLibrary), [])
 
@@ -133,11 +134,14 @@ export default function Sidebar() {
             style={{
                 width: collapsed ? 44 : 320,
                 minWidth: collapsed ? 44 : 320,
-                transition: "width 0.3s cubic-bezier(0.4,0,0.2,1), min-width 0.3s cubic-bezier(0.4,0,0.2,1)",
+                transition: "width 0.3s cubic-bezier(0.4,0,0.2,1), min-width 0.3s cubic-bezier(0.4,0,0.2,1), opacity 0.2s ease, transform 0.2s ease",
                 background: "#000000",
                 borderColor: "rgba(255,255,255,0.06)",
                 fontFamily: "'DM Sans', sans-serif",
                 position: "relative",
+                opacity: fullscreen ? 0 : 1,
+                transform: fullscreen ? "translateX(-12px)" : "translateX(0)",
+                pointerEvents: fullscreen ? "none" : "auto",
             }}
         >
             {/* ── Strip colapsada ── */}
