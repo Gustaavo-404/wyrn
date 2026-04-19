@@ -59,7 +59,7 @@ export default async function Dashboard() {
           style={{ background: "rgba(0,0,0,0.82)" }}>
           <div className="flex items-center gap-8">
             <span className="text-[17px] font-semibold tracking-tight">
-              Lynq<span style={{ color: "#FFD300" }}>.</span>
+              Wyrn<span style={{ color: "#FFD300" }}>.</span>
             </span>
             <nav className="hidden md:flex items-center gap-1">
               {[["Projects", true], ["Templates", false], ["Docs", false]].map(([label, active]) => (
@@ -414,7 +414,7 @@ export default async function Dashboard() {
         {/* ── Footer ── */}
         <footer className="relative z-10 border-t border-white/[0.05] px-10 py-5 flex items-center justify-between">
           <span className="font-mono text-[10px] text-white/15">
-            Lynq · {new Date().getFullYear()}
+            Wyrn · {new Date().getFullYear()}
           </span>
           <div className="flex items-center gap-5">
             {["Help", "Privacy", "Terms"].map((l) => (
