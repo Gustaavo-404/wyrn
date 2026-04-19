@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect } from "react"
+import { useEffect, useRef } from "react"
 import { useEditorStore } from "@/store/useEditorStore"
 import { SectionInstance } from "@/types/section"
 import Sidebar from "@/components/editor/Sidebar"
@@ -16,16 +16,20 @@ interface Props {
 }
 
 export default function EditorClient({ project }: Props) {
-  const setSections = useEditorStore((s) => s.setSections)
-  const setProjectId = useEditorStore((s) => s.setProjectId)
-  const setProjectName = useEditorStore((s) => s.setProjectName)
+  const initEditor = useEditorStore((s) => s.initEditor)
+  const initializedFor = useRef<string | null>(null)
 
   useEffect(() => {
-    setProjectId(project.id)
-    setProjectName(project.name)
+    if (initializedFor.current === project.id) return
+    initializedFor.current = project.id
 
-    const raw = project.data?.sections
-    setSections(Array.isArray(raw) ? raw : [])
+    initEditor({
+      projectId: project.id,
+      projectName: project.name,
+      sections: Array.isArray(project.data?.sections)
+        ? project.data.sections
+        : [],
+    })
   }, [project.id])
 
   return (

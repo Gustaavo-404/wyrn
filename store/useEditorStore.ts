@@ -33,6 +33,13 @@ type EditorStore = {
   // ─── Autosave ───────────────────────────────────────────────
   saveStatus: SaveStatus
   setSaveStatus: (status: SaveStatus) => void
+
+  // ─── Inicialização atômica (substitui resetEditor + chamadas separadas) ──
+  initEditor: (args: {
+    projectId: string
+    projectName: string
+    sections: SectionInstance[]
+  }) => void
 }
 
 export const useEditorStore = create<EditorStore>((set, get) => ({
@@ -41,20 +48,7 @@ export const useEditorStore = create<EditorStore>((set, get) => ({
   setProjectId: (id) => set({ projectId: id }),
 
   projectName: "",
-  setProjectName: (name) => {
-    set({ projectName: name })
-
-    const { projectId, sections } = get()
-    if (projectId) {
-      set({ saveStatus: "saving" })
-      scheduleAutosave(
-        projectId,
-        sections,
-        () => set({ saveStatus: "saved" }),
-        () => set({ saveStatus: "error" })
-      )
-    }
-  },
+  setProjectName: (name) => set({ projectName: name }),
 
   // ─── Sections ───────────────────────────────────────────────
   sections: [],
@@ -69,14 +63,15 @@ export const useEditorStore = create<EditorStore>((set, get) => ({
   },
 
   addSection: (instance) => {
-    set((state) => ({ sections: [...state.sections, instance] }))
-
     const { projectId, sections } = get()
+    const next = [...sections, instance]
+    set({ sections: next })
+
     if (projectId) {
       set({ saveStatus: "saving" })
       scheduleAutosave(
         projectId,
-        [...sections, instance],
+        next,
         () => set({ saveStatus: "saved" }),
         () => set({ saveStatus: "error" })
       )
@@ -172,4 +167,14 @@ export const useEditorStore = create<EditorStore>((set, get) => ({
   // ─── Autosave ───────────────────────────────────────────────
   saveStatus: "idle",
   setSaveStatus: (status) => set({ saveStatus: status }),
+
+  // ─── Inicialização atômica (sem race conditions) ───────────
+  initEditor: ({ projectId, projectName, sections }) => set({
+    projectId,
+    projectName,
+    sections: Array.isArray(sections) ? sections : [],
+    selectedSectionId: null,
+    saveStatus: "idle",
+    fullscreen: false,
+  }),
 }))
